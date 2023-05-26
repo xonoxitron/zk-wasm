@@ -21,7 +21,7 @@ use bellman::{
     Circuit, ConstraintSystem, SynthesisError,
 };
 
-use ff::{BitIterator, Field, PrimeField, PrimeFieldRepr};
+use ff::{BitIterator, PrimeField};
 use pairing::bn256::{Bn256, Fr};
 use rand::{ChaChaRng, SeedableRng};
 use sapling_crypto::{
@@ -30,20 +30,9 @@ use sapling_crypto::{
     },
     circuit::{
         baby_ecc::fixed_base_multiplication,
-        baby_pedersen_hash,
-        boolean::{self, AllocatedBit, Boolean},
-        num,
+        boolean::{AllocatedBit, Boolean},
     },
 };
-
-#[wasm_bindgen(module = "helpers")]
-extern "C" {
-    fn alert(s: &str);
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-    fn start_timer() -> u32;
-    fn finish_timer(timer_id: u32) -> u32;
-}
 
 struct DiscreteLogCircuit<'a, E: JubjubEngine> {
     pub params: &'a E::Params,
@@ -100,7 +89,7 @@ pub struct KGVerify {
     pub result: bool,
 }
 
-#[wasm_bindgen(catch)]
+#[wasm_bindgen()]
 pub fn generate(seed_slice: &[u32]) -> Result<JsValue, JsValue> {
     let res = run_generate(seed_slice);
     if res.is_ok() {
@@ -131,7 +120,7 @@ fn run_generate(seed_slice: &[u32]) -> Result<KGGenerate, Box<dyn Error>> {
     })
 }
 
-#[wasm_bindgen(catch)]
+#[wasm_bindgen()]
 pub fn prove(seed_slice: &[u32], params: &str, x_hex: &str) -> Result<JsValue, JsValue> {
     let res = run_prove(seed_slice, params, x_hex);
     if res.is_ok() {
@@ -188,7 +177,7 @@ fn run_prove(seed_slice: &[u32], params: &str, x_hex: &str) -> Result<KGProof, B
     })
 }
 
-#[wasm_bindgen(catch)]
+#[wasm_bindgen()]
 pub fn verify(params: &str, proof: &str, h: &str) -> Result<JsValue, JsValue> {
     let res = run_verify(params, proof, h);
     if res.is_ok() {

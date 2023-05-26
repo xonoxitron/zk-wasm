@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>ZK-WASM</title>
+    <script type="module">
+        // Import the generated JavaScript interop code
+        import init, { generate, prove, verify } from "./zk_wasm.js";
+        init().then(() => {
+            window.generate = generate;
+            window.prove = prove;
+            window.verify = verify;
+        }).catch((e) => {
+            console.error(e);
+        })
+    </script>
+</head>
+
+<body>
+    <h1>ZK-WASM</h1>
+    <h3>Generate keys:</h3>
+    <p>
+        h = g^x
+    </p>
+    <label>key:</label>
+    <br>
+    <textarea id="keyOut" rows="4" cols="50"></textarea>
+    <br>
+    <label id="keyKb"></label>
+    <br>
+    <button onclick="execGenerate()">Generate</button>
+    <br>
+
+    <hr>
+
+    <h3>Prove knowledge:</h3>
+    <label>h: <span id="hOut">-</span></label>
+    <br>
+    <label>proof:</label>
+    <br>
+    <textarea id="proofOut" rows="4" cols="50"></textarea>
+    <br>
+    <br>
+    <label>x (hex):</label>
+    <input type="text" id="xIn">
+    <br>
+    <br>
+    <button onclick="execProve()">Prove</button>
+    <br>
+
+    <hr>
+
+    <h3>Verify:</h3>
+    <label>h:</label>
+    <input type="text" id="hIn">
+    <br>
+    <label>proof:</label>
+    <br>
+    <textarea id="proofIn" rows="4" cols="50"></textarea>
+    <br>
+    <br>
+    <label>result: <span id="verifyOut">-</span></label>
+    <br>
+    <br>
+    <button onclick="execVerify()">Verify</button>
+    <br>
+
+    <script>
+        function getSeed() {
+            var seed = new Uint32Array(8);
+            self.crypto.getRandomValues(seed);
+            return seed;
+        }
+
+        function execGenerate() {
+            const key = window.generate(getSeed()).params;
+            window.key = keyOut.innerText = key;
+            keyKb.innerText = `(${(key.length / 1024).toFixed(2)} Kb)`;
+        }
+
+        function execProve() {
+            let p = window.prove(getSeed(), window.key, xIn.value);
+            window.h = p.h;
+            window.proof = p.proof;
+            hOut.innerText = p.h;
+            proofOut.value = p.proof;
+        }
+
+        function execVerify() {
+            const v = window.verify(window.key, window.proof, window.h);
+            verifyOut.innerText = v.result.toString();
+        }
+    </script>
+</body>
+
+</html>

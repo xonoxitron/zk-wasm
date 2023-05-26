@@ -1,27 +1,30 @@
 [package]
-name = "zk-wasm"
-version = "0.1.0"
 authors = ["Matteo Pisani <matteo.pisani.91@gmail.com>"]
+description = "🦀 Rust WebAssembly VM: Execute Rust Virtual Machine programs in the Web Browser"
 edition = "2021"
+license = "MIT"
+name = "zk-wasm"
+repository = "https://github.com/xonoxitron/zk-wasm"
+version = "0.1.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-sapling-crypto = { path = "deps/sapling-crypto" }
-pairing = { path = "deps/pairing" }
-ff = { path = "deps/ff" }
-rand = "0.4.6"
+ff = {path = "deps/ff"}
 hex = "0.4.3"
+num-bigint = "0.4.3"
+num-traits = "0.2.15"
+pairing = {path = "deps/pairing"}
+rand = "0.4.6"
+sapling-crypto = {path = "deps/sapling-crypto"}
 serde = "1.0.163"
 serde_derive = "1.0.163"
 serde_json = "1.0.96"
-num-bigint = "0.4.3"
-num-traits = "0.2.15"
 
 [dependencies.bellman]
 path = "deps/bellman"
 
 [dependencies.wasm-bindgen]
-version = "0.2.86"
 features = ["serde-serialize"]
+version = "0.2.86"
